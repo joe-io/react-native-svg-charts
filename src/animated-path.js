@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { InteractionManager } from 'react-native'
+import { InteractionManager, Platform } from 'react-native'
 import PropTypes from 'prop-types'
 import { Path } from 'react-native-svg'
 import * as interpolate from 'd3-interpolate-path'
@@ -36,6 +36,14 @@ class AnimatedPath extends Component {
         cancelAnimationFrame(this.animation)
         this._clearInteraction()
     }
+    
+    setD(d) {
+        if (Platform.OS === 'web') {
+            this.component.d = d;
+        } else {
+            this.component.setNativeProps({ d });
+        }
+    }
 
     _animate(start) {
         cancelAnimationFrame(this.animation)
@@ -53,14 +61,16 @@ class AnimatedPath extends Component {
             // If we're above 1 then our animation should be complete.
             if (delta > 1) {
                 // Just to be safe set our final value to the new graph path.
-                this.component.setNativeProps({ d: this.newD })
+//                 this.component.setNativeProps({ d: this.newD })
+                this.setD(this.newD);
                 // Stop our animation loop.
                 this._clearInteraction()
                 return
             }
 
             const d = this.interpolator(delta)
-            this.component.setNativeProps({ d })
+//             this.component.setNativeProps({ d })
+            this.setD(d);
             // console.log(this.interpolator)
             // this.tween && console.log(this.tween.tween(delta))
             // Tween the SVG path value according to what delta we're currently at.
