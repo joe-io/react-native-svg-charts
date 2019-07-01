@@ -37,9 +37,9 @@ class AnimatedPath extends Component {
         this._clearInteraction()
     }
     
-    setD(d) {
+    setPath(d) {
         if (Platform.OS === 'web') {
-            this.component.d = d;
+            this.setState({ d });
         } else {
             this.component.setNativeProps({ d });
         }
@@ -61,16 +61,14 @@ class AnimatedPath extends Component {
             // If we're above 1 then our animation should be complete.
             if (delta > 1) {
                 // Just to be safe set our final value to the new graph path.
-//                 this.component.setNativeProps({ d: this.newD })
-                this.setD(this.newD);
+                this.setPath(this.newD);
                 // Stop our animation loop.
                 this._clearInteraction()
                 return
             }
 
             const d = this.interpolator(delta)
-//             this.component.setNativeProps({ d })
-            this.setD(d);
+            this.setPath(d);
             // console.log(this.interpolator)
             // this.tween && console.log(this.tween.tween(delta))
             // Tween the SVG path value according to what delta we're currently at.
